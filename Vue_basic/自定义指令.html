@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>自定义指令</title>
+    <!-- 引入 js 文件   vue.js 为开发版本  vue.main.js 为生成版本(没有代码提示,用于代码开发完成上线) -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+    <!-- 
+        需求1：定义一个v-big指令，和v-text功能类似，但会把绑定的数值放大10倍。
+        需求2：定义一个v-fbind指令，和v-bind功能类似，但可以让其所绑定的input元素默认获取焦点。
+        自定义指令总结：
+            一、定义语法：
+                        (1).局部指令：
+                                    new Vue({															new Vue({
+                                        directives:{指令名:配置对象}   或   		directives{指令名:回调函数}
+                                    }) 																		})
+                        (2).全局指令：
+                                        Vue.directive(指令名,配置对象) 或   Vue.directive(指令名,回调函数)
+
+            二、配置对象中常用的3个回调：
+                        (1).bind：指令与元素成功绑定时调用。
+                        (2).inserted：指令所在元素被插入页面时调用。
+                        (3).update：指令所在模板结构被重新解析时调用。
+
+            三、备注：
+                        1.指令定义时不加v-，但使用时要加v-；
+                        2.指令名如果是多个单词，要使用kebab-case命名方式，不要用camelCase命名。
+    -->
+    <div id="root">
+        <h2>当前的n值是:<span v-text="n"></span></h2>
+        <!-- 如果是 v-bigNumber 建议写成 v-big-number 的形式  然后 directive 对应写完整写法-->
+        <h2>放大10倍后的n值是:<span v-big="n"></span></h2>
+        <button @click="n++">点我n+1</button>
+        <hr/>
+        <!-- v-bind:  简写成  : -->
+        <!-- 让控件一上来就获取焦点  当点击按钮添加n后取消焦点 -->
+        <input type="text" v-fbind:value="n">
+    </div>
+
+    <script>
+        Vue.config.productionTip = false  // 设置为 false 以阻止 vue 在启动时生成生产提示
+        // 全局指令写法  写后局部就可以删除代码
+        // Vue.directive('fbind',{
+        //             // bind 和 update 就像 big 函数的两种不同调用时候
+		// 			//指令与元素成功绑定时（一上来）
+		// 			bind(element,binding){    // 指向 window
+        //                 // 将 binding(n) 的值写入页面中展示
+		// 				element.value = binding.value
+		// 			},
+		// 			//指令所在元素被插入页面时    .focus()获取焦点
+		// 			inserted(element,binding){
+		// 				element.focus()
+		// 			},
+		// 			//指令所在的模板被重新解析时执行   重新解析后获取焦点取消 
+        //             // 一点击按钮增加n  调用 update 
+		// 			update(element,binding){
+		// 				element.value = binding.value
+        //                 // 如果再添加这一句   每次点击按钮添加n后都会获取输入框焦点
+        //                 // element.focus()
+		// 			}
+		// 		})
+        new Vue({
+            el:'#root',
+            data:{
+                name:'尚硅谷',
+                n:1,
+            },
+            // 定义指令 配置对象
+            // 所有指令相关的函数对象都是指向 window
+            directives:{ 
+                // 如果命名有加个 -  例如 v-big-number 则写的时候加引号 'big-number'
+                /* 'big-number'(element,binding){
+					// console.log('big')
+					element.innerText = binding.value * 10
+				}, */
+
+                // 函数式
+                // 将 big:function(){}  简写  binding 代表元素和指令之间的关系
+                // big 函数什么时候调用：1.指令与元素成功绑定时   
+                // 2.指令所在的vue模板被重新解析时big就被调用  比如name更改的时候big也会被调用一次  虽然数值不变
+                big(element,binding){
+                    element.innerText = binding.value * 10
+                },
+                // 对象式   
+				fbind:{
+                    // bind 和 update 就像 big 函数的两种不同调用时候
+					//指令与元素成功绑定时（一上来）
+					bind(element,binding){    // 指向 window
+                        // 将 binding(n) 的值写入页面中展示
+						element.value = binding.value
+					},
+					//指令所在元素被插入页面时    .focus()获取焦点
+					inserted(element,binding){
+						element.focus()
+					},
+					//指令所在的模板被重新解析时执行   重新解析后获取焦点取消 
+                    // 一点击按钮增加n  调用 update 
+					update(element,binding){
+						element.value = binding.value
+                        // 如果再添加这一句   每次点击按钮添加n后都会获取输入框焦点
+                        // element.focus()
+					}
+				}
+            }
+        })
+
+    </script>
+</body>
+</html>

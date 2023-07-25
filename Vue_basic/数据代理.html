@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>数据代理</title>
+    <!-- 引入 js 文件   vue.js 为开发版本  vue.main.js 为生成版本(没有代码提示,用于代码开发完成上线) -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <!-- 可以写成  _data.name  的形式 -->
+        <h2>学校名称：{{name}}</h2>
+        <h2>学校地址：{{address}}</h2>
+    </div>
+
+    <script>
+        Vue.config.productionTip = false  // 设置为 false 以阻止 vue 在启动时生成生产提示
+        // 数据代理：通过一个对象对另外一个对象中的属性的操作
+        let obj = {x:100}
+        let obj2 = {y:200}
+
+        Object.defineProperty(obj2,'x',{
+            get(){
+                return obj.x
+            },
+            set(value){
+                obj.x = value
+            }
+        })
+
+        const vm = new Vue({
+            el:'#root',
+            // vm._data  与  data 是一样的
+            data:{
+                name:'尚硅谷',
+                address:'福建'
+            }
+        })
+    </script>
+</body>
+</html>

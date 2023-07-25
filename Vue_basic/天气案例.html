@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>监视属性-watch</title>
+    <!-- 引入 js 文件   vue.js 为开发版本  vue.main.js 为生成版本(没有代码提示,用于代码开发完成上线) -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <!-- 监视属性-watch
+        1. 通过通过 vm 对象的$watch()或 watch 配置来监视指定的属性
+        2. 当属性变化时, 回调函数自动调用, 在函数内部进行计算 -->
+        <h2>今天天气很{{info}},{{x}}</h2>
+        <button @click="changeWeather">切换天气</button>
+        <!-- 直接写在这里也能实现切换功能  一般就一句或者是简单的语句用这种方法-->
+        <!-- <button @click="isHot = !isHot">切换天气</button> -->
+    </div>
+
+    <script>
+        // computed可以完成各种复杂的逻辑，包括运算、函数调用等，只要最终   return 返回一个结果就可以
+        Vue.config.productionTip = false  // 设置为 false 以阻止 vue 在启动时生成生产提示
+        new Vue({
+            el:'#root',
+            data:{
+                isHot:true,
+                x:1
+            },
+            computed:{
+                info(){
+                    return this.isHot ? '炎热' : '凉爽'
+                }
+            },
+            methods: {
+                changeWeather(){
+                    // 切换 true 和 false
+                    this.isHot = !this.isHot
+                    this.x++
+                }
+            },
+        })
+        
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- 引入 js 文件   vue.js 为开发版本  vue.main.js 为生成版本(没有代码提示,用于代码开发完成上线) -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+    <!-- 条件渲染指令
+    1. v-if 与 v-else   与 if 和 else 和 else-if  的功能类似
+    2. v-show
+    比较 v-if 与 v-show
+    1. 如果需要频繁切换  v-show  较好
+    2. 当条件不成立时, v-if 的所有子节点不会解析(项目中使用) -->
+
+    <div id="root">
+        <!-- 如果前面有 v-if 和 v-else-if  则最后的  v-else 后面不需要写判断条件  直接输出对应值 -->
+        <!-- 使用v-if元素可能无法获取到  v-show一定可以获取到 -->
+        <h2>当前的n值是{{n}}</h2>
+        <button @click="n++">点我n+1</button>
+        <!-- v-if 与 v-else -->
+        <!-- 而结构中间不允许被打断 也就是中间加一句语句 -->
+        <div v-if="n === 1">angular</div>
+        <div v-else-if="n === 2">react</div>
+        <div v-else-if="n === 3">Vue</div>
+        <div v-else>哈哈</div>
+        <!-- template 比div好，不破坏页面结构 -->
+        <!-- template 只能配合 v-if 不能配合 v-show -->
+        <template v-if="n === 1"> 
+                <h2>你好</h2>
+                <h2>尚硅谷</h2>
+                <h2>北京</h2>
+        </template><hr/>
+
+        <!-- v-show 渲染 会暂时隐藏  可以根据情况在设置出 -->
+        <h2 v-show="true">欢迎来到{{name}}</h2>
+        <!-- v-if 渲染  如果不需要的话会将整个结构直接删除  需要的时候再重建 -->
+        <h2 v-show="false">欢迎来到{{name}}</h2> <hr/>
+
+    </div>
+
+    <script>
+        Vue.config.productionTip = false  // 设置为 false 以阻止 vue 在启动时生成生产提示
+        new Vue({
+            el:'#root',
+            data:{
+                name:'尚硅谷',
+                n:0
+            }
+        })
+
+    </script>
+</body>
+</html>

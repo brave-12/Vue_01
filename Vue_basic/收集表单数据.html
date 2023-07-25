@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- 引入 js 文件   vue.js 为开发版本  vue.main.js 为生成版本(没有代码提示,用于代码开发完成上线) -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+    <!-- 
+    收集表单数据：
+        若：<input type="text"/>，则v-model收集的是value值，用户输入的就是value值。
+        若：<input type="radio"/>，则v-model收集的是value值，且要给标签配置value值。
+        若：<input type="checkbox"/>
+                1.没有配置input的value属性，那么收集的就是checked（勾选 or 未勾选，是布尔值）
+                2.配置input的value属性:
+                        (1)v-model的初始值是非数组，那么收集的就是checked（勾选 or 未勾选，是布尔值）
+                        (2)v-model的初始值是数组，那么收集的的就是value组成的数组
+        备注：v-model的三个修饰符：
+                        lazy：失去焦点再收集数据
+                        number：输入字符串转为有效的数字
+                        trim：输入首尾空格过滤
+    -->
+    <div id="root">
+        <!-- .prevent 阻止默认事件  这边是阻止表单默认跳转 -->
+        <form @submit.prevent="demo">
+            <!-- .trim首尾不收集空格 -->
+            账号：<input type="text" v-model.trim="account"><br/><br/>
+            密码：<input type="password" v-model="password"><br/><br/>
+            <!-- type="number" 只能是数字以及有个可以加减的箭头  v-model.number在vue中让age不是字符串而是数字 -->
+            <!-- 比如是数字20而不是字符串"20"  一般来说这两个number同时使用 -->
+            年龄：<input type="number" v-model.number="age"><br/><br/>
+            <!-- 给两个空间一个name可以让两个不会同时选中 -->
+            性别：男<input type="radio" name="sex" v-model="sex" value="male">
+            女<input type="radio" name="sex" v-model="sex" value="female"><br/><br/>
+            <!-- 如果v-model写的一样  那么选中一个另外两个也会同时选中 -->
+            爱好：学习<input type="checkbox" v-model="hobby" value="study">
+            打游戏<input type="checkbox" v-model="hobby" value="game"> 
+            吃饭<input type="checkbox" v-model="hobby" value="eat"><br/><br/>
+            所属校区：<select v-model="city">
+                <option value="">请选择校区</option>
+                <option value="beijing">北京</option>
+                <option value="shanghai">上海</option>
+                <option value="shenzhen">深圳</option>
+                <option value="wuhan">武汉</option>
+            </select><br/><br/>
+            <!-- .lazy当焦点移开当前控件之后再收集当前信息 -->
+            其他信息：<textarea v-model.lazy="other" cols="30" rows="10"></textarea><br/><br/>
+            <input type="checkbox" v-model="agree">阅读并接受<a href="http://www.atguigu.com">用户协议</a><br/><br/>
+            <button>提交</button>
+        </form>
+    </div>
+
+    <script>
+        Vue.config.productionTip = false  // 设置为 false 以阻止 vue 在启动时生成生产提示
+        new Vue({
+            el:'#root',
+            data:{
+                // 传输收集的值就是value值  也就是输入框内的值
+                account:'',
+                password:'',
+                age:'',
+                // 如果没有输入框可以直接给对应控件定义value值  这把直接写了个默认value值
+                sex:'female',
+                // 如果是对应多个勾选值  则要设定成一个数组
+                hobby:[],
+                // 设置默认值北京
+                city:'beijing',
+                other:'',
+                // 也可以写 agree:false
+                agree:''
+
+            },
+            methods: {
+                demo(){
+                    // 返回输入的表单数据
+                    console.log(JSON.stringify(this._data));
+                    
+                }
+            },
+        })
+
+    </script>
+</body>
+</html>

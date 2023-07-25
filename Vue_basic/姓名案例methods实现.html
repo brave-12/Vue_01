@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- 引入 js 文件   vue.js 为开发版本  vue.main.js 为生成版本(没有代码提示,用于代码开发完成上线) -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+    <style>
+        *{
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <!-- v-model: 双向数据绑定 -->
+        姓：<input type="text" v-model:value="firstname"><br/>
+        名：<input type="text" v-model:value="lastname"><br/>
+        <!-- slice(0,3) 只选取 firsetname 前三位 -->
+        全名：<span>{{fullname()}}</span>
+    </div>
+
+    <script>
+        Vue.config.productionTip = false  // 设置为 false 以阻止 vue 在启动时生成生产提示
+        new Vue({
+            el:'#root',
+            // 在页面中Vue的data里面的值发生改变的时候  模板会被重新解析更新
+            data:{
+                firsetname:'张',
+                lastname:'三'
+            },
+            methods:{
+                fullname(){
+                    return this.firstname + '-' + this.lastname
+                }
+            }
+        })
+
+    </script>
+</body>
+</html>

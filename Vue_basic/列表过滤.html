@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>列表过滤</title>
+    <!-- 引入 js 文件   vue.js 为开发版本  vue.main.js 为生成版本(没有代码提示,用于代码开发完成上线) -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <h2>人员列表</h2>
+        <input type="text" placeholder="请输入名字" v-model="keyword">
+        <button @click="sortType = 2">年龄升序</button>
+        <button @click="sortType = 1">年龄降序</button>
+        <button @click="sortType = 0">原顺序</button><hr/>
+
+        <button @click="updatemei">更新马冬梅的信息</button>
+        <ul>
+            <!-- 排序和过滤都基于 filPersons -->
+            <li v-for="p in filPersons" :key="p.id">
+                {{p.name}}-{{p.age}}-{{p.sex}}
+            </li>
+        </ul>
+
+    </div>
+
+    <script>
+        Vue.config.productionTip = false  // 设置为 false 以阻止 vue 在启动时生成生产提示
+        // 用 computed(计算属性) 实现
+        new Vue({
+            el:'#root',
+            data:{
+                keyword:'',
+                sortType:0, // 0 代表原顺序  1降序  2 升序
+                persons:[
+                    {id:'001',name:'马冬梅',age:18,sex:'女'},
+                    {id:'002',name:'周冬雨',age:19,sex:'女'},
+                    {id:'003',name:'周杰伦',age:22,sex:'男'},
+                    {id:'004',name:'温兆伦',age:21,sex:'男'},
+                ]
+            },
+            methods: {
+                updatemei(){
+                    this.filPersons[0].name = '马老师'
+                    this.filPersons[0].age = 50
+                    this.filPersons[0].sex = '男'
+                    // 这种写法vue监测不到变化   虽然数据已经修改了 
+                    // 如果在控制台上查询之后 再去vue管理工具查询数据就会有变化  但是页面还是不体现
+                    // this.filPersons[0] =  {id:'001',name:'马老师',age:50,sex:'男'}
+                }
+            },
+            computed:{
+                // filter() 方法创建一个新的数组，新数组中的元素是通过检查指定数组中符合条件的所有元素。
+                // filPersons 返回过滤后的数据 
+                // 因为排序是根据 sortType 的数值 默认为0  当我们点击原顺序之后 让sortType为0就会变回原来的顺序
+                filPersons(){
+                    const arr = this.persons.filter((p) => {
+                        // indexOf !== -1  说明有匹配
+                        return p.name.indexOf(this.keyword) !== -1
+                    })
+                    // 判断一下是否需要排序
+                    if(this.sortType){
+                        // a,b 代表前后两个数据项  b-a降序   a-b升序
+                        arr.sort((a,b) => {
+                            return this.sortType === 1 ? b.age-a.age : a.age-b.age
+                        })
+                    }
+                    return arr
+                }
+
+            }
+        })
+
+        // 用watch(监视)实现
+        // new Vue({
+        //     el:'#root',
+        //     data:{
+        //         keyword:'',
+        //         persons:[
+        //             {id:'001',name:'马冬梅',age:18,sex:'女'},
+        //             {id:'002',name:'周冬雨',age:19,sex:'女'},
+        //             {id:'003',name:'周杰伦',age:20,sex:'男'},
+        //             {id:'004',name:'温兆伦',age:21,sex:'男'},
+        //         ],
+        //         filPersons:[]
+        //     },
+        //     watch:{
+        //         keyword:{
+        //             // 因为 filPersons 为空  当我们还没寻找的时候页面不会显示数据  需要 immediate 先运行一次
+        //             immediate:true,
+        //             handler(val){
+        //                 this.filPersons = this.persons.filter((p) => {
+        //                 // indexOf !== -1  说明有匹配
+        //                 return p.name.indexOf(val) !== -1
+        //             })
+        //         }
+        //     }
+        //     }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>姓名案例监视属性实现</title>
+    <!-- 引入 js 文件   vue.js 为开发版本  vue.main.js 为生成版本(没有代码提示,用于代码开发完成上线) -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+    <!-- computed能完成的功能，watch都可以完成 -->
+    <!-- watch能完成的功能，computed不一定能完成  例如watch可以异步操作 -->
+    <!-- 所有被vue管理的函数写成普通函数  这样才指向vm或组件实例对象 -->
+    <!-- 而不被vue管理的函数(定时器回调，ajax的回调) 最好写成箭头函数  这样this的指向是vm -->
+    <div id="root">
+        <!-- v-model: 双向数据绑定 -->
+        姓：<input type="text" v-model:value="firstname"><br/><br/>
+        名：<input type="text" v-model:value="lastname"><br/><br/>
+        全名：<span>{{fullname}}</span><br/><hr/>
+    </div>
+
+    <script>
+        Vue.config.productionTip = false  // 设置为 false 以阻止 vue 在启动时生成生产提示
+        const vm = new Vue({
+            el:'#root',
+            // 在页面中Vue的data里面的值发生改变的时候  模板会被重新解析更新
+            data:{
+                // firsetname 属性名   '张' 属性值
+                firstname:'张',
+                lastname:'三',
+                fullname:'张-三'
+            },
+            // 监视属性的对象是 data 中的属性对象   如果没有 immediate 等附加项可以直接写成下面方法的形式
+            // 事件是异步执行的话只能用 watch 比如延时 1s    computed 不行
+            watch: {
+                firstname(val){
+                    // 定时器  延迟 1s 触发  定时器内的内容不归vue管  因此要写箭头函数  不然用普通函数指向window
+                    setTimeout(() => {
+                        this.fullname = val + '-' + this.lastname
+                    }, 1000);
+                },
+                lastname(val){
+                    this.fullname = this.firstname + '-' + val
+                }
+            }
+        })
+
+    </script>
+</body>
+</html>

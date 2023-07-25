@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+    </style>
+    <title>Vue核心</title>
+    <!-- 引入 js 文件   vue.js 为开发版本  vue.main.js 为生成版本(没有代码提示,用于代码开发完成上线) -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+    <!-- 想让Vue工作，就必须有一个Vue实力和一个配置对象 -->
+    <!-- 准备好一个容器，代码符合html规范，只是添加了一些特殊的Vue语法 -->
+    <!-- 容器内代码称为 【Vue模板】 -->
+    <div id="root">
+        <!-- 插值语法  {{}}  直接就能读取到 data 里面的每个对象  也可以自动运算 1+1  输出为 2-->
+        <!-- 也就是双括号内写  js 表达式(例如a+b) 和 js 代码(例如if(){}) -->
+        <h1>插值语法</h1>
+        <h3>hello,{{name}}，{{school.address}}，{{1+1}}</h3>
+        <hr/>
+        <h1>指令语法</h1>
+        <!-- toUpperCase() 变成大写字母 -->
+        <a v-bind:href="school.url.toUpperCase()">点我去尚硅谷</a>
+        <!-- v-bind:  简写为  : -->
+        <a :href="school.url">点我去{{school.name}}</a>
+        <hr/>
+    </div>
+
+    <!-- 数据绑定  v-bind: 单向  v-model: 双向-->
+    <div id="bd">
+        单向数据绑定：<input type="text" :value="name"><br>
+        <!-- v-model: 只能用在表单元素(输入类元素)上 -->
+        <!-- v-model:value  可以简写为 v-model -->
+        双向数据绑定：<input type="text" v-model:value="name">
+        <!-- $options 为 Vue 原型上的东西  都可以直接用 -->
+        <!-- <h1>测试：{{$options}}</h1> -->
+    </div>
+
+
+
+    <script type="text/javascript">
+        // Vue  动态构建用户界面的渐进式 JavaScript 框架
+        // Vue 的特点
+        // 1. 遵循 MVVM 模式
+        // 2. 编码简洁, 体积小, 运行效率高, 适合移动/PC 端开
+        Vue.config.productionTip = false  // 设置为 false 以阻止 vue 在启动时生成生产提示
+
+        // 容器 和 Vue 实例 的关系是一对一的关系    不能是一对多的关系
+        // 如果有两个同名 class   Vue实例只会接管第一个 class 的容器  不能同时接管两个容器
+        // 如果有两个同名 实例     class 容器只会被第一个实例接管   不能同时被两个容器接管
+
+        // 创建 vue 实例  el:element
+        // 因为没用到 x 因此可以直接忽略    const x = new Vue({
+        new Vue({ 
+            el: '#root',  // el 用于指定当前实例为 id 为 root 的容器服务，值通常为 css 选择器字符串
+            data: { // data 用于存储数据，数据提供给 el 规定的容器使用，暂时写成一个对象
+                name: '尚硅谷',
+                // 通过分级的方式区分两个同名的属性 name
+                school:{
+                    name: 'Jay',
+                    address: '莆田',
+                    url: 'http://www.atguigu.com'
+                }
+            }
+        })
+
+        // 插值语法  用于解析标签体中间的内容    指令语法  用于解析标签内(标签属性、标签体内容、绑定事件)  
+        // 指令的形式为  v-xxxx: 
+        // v-bind:href = 'xxxx' ，v-bind: 让 xxxx 会作为 js 表达式被解析
+        // v-bind:  可以给任何一个标签属性 动态地绑定值
+
+        // 单向数据绑定  数据只能从 data 流向页  双向数据绑定  数据不仅能从 data 流向页面，还能从页面流向 data
+        new Vue({
+            el: '#bd',
+            // data 里面的数据最终出现在了 VM 视图模型上   通过 Vue 原型对象进行调用
+            data: {
+                name:'尚硅谷'
+            }
+        })
+
+        // Vue 管理的函数一定不要写 箭头函数
+        // el 的不同写法  通过 $mount 进行绑定   data 的不同写法  函数式
+        const v = new Vue({
+            // el: '#x', // 第一种写法
+            data: {  // 对象式
+                name:'尚硅谷'
+            }
+            // 函数式写法   学习到组件时 data 必须使用函数式写法  否则会报错
+            // data:function(){
+            //     console.log('@@@',this);  // 此处的 this 是Vue 实例对象
+            //     return{
+            //         name:'尚硅谷'
+            //     }
+            // }
+        })
+        // 第二种写法
+        v.$mount('#x')
+
+        // MVVM 模型   是一种软件架构模型     Vue 参考MVVM 模型
+        // M：模型(Model) ：对应 data 中的数据
+        // 2. V：视图(View) ：模板
+        // 3. VM：视图模型(ViewModel) ： Vue 实例对象
+        // 文档中经常会使用 vm (ViewModel 的缩写) 这个变量名表示 Vue 实例。
+
+
+        
+
+
+    </script>
+
+
+
+</body>
+</html>

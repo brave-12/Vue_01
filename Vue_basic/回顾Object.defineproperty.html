@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>回顾Object.defineproperty</title>
+    <!-- 引入 js 文件   vue.js 为开发版本  vue.main.js 为生成版本(没有代码提示,用于代码开发完成上线) -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+    
+    <script>
+        let number = 18
+        let person = {
+            name: '张三',
+            sex: '男',
+        }
+        // Object.defineProperty() 静态方法会直接在一个对象上定义一个新属性，或修改其现有属性，并返回此对象。
+        Object.defineProperty(person,'age',{
+            // // 定义之后该属性的颜色和原生的颜色区分开  表示不能被枚举   也就是 age 属性不参与遍历
+            // value: 18,
+            // // 设置属性是否可以被枚举  默认值是false   设置之后 value 就可以正常遍历了
+            // enumerable: true,
+            // // 设置属性是否可以被修改  默认值是false  设置为 true 后控制台更改数据就可以实现
+            // writable: true,
+            // // 设置属性是否可以被删除  默认值是false  可以在控制台进行试验  比如 delete person.age
+            // configurable: true,
+
+            // get:function 当有人读取person的age属性时，get函数(getter)就会被调用，且返回值就是age的值
+            get(){
+                return number
+            },
+            // 当有人修改person的age属性时，set函数(setter)就会被调用，且会收到修改的age值
+            set(value){
+                console.log('有人修改了age属性，且值是',value);
+                // 因为调用的时候修改 age 属性  让value改变   但number没有改变
+                // 因此重新赋值让number改变成与value相同的值
+                number = value
+            }
+        })
+        console.log(person);
+
+        // 不能遍历到 value   因为被枚举了   不参与遍历数据
+        // console.log(Object.keys(person));
+        // 同理 value 没有被遍历出
+        for(let key in person){
+            console.log('@',person[key]); 
+        }
+        
+    </script>
+</body>
+</html>

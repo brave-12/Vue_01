@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>姓名案例计算属性实现</title>
+    <!-- 引入 js 文件   vue.js 为开发版本  vue.main.js 为生成版本(没有代码提示,用于代码开发完成上线) -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <!-- v-model: 双向数据绑定 -->
+        姓：<input type="text" v-model:value="firstname"><br/><br/>
+        名：<input type="text" v-model:value="lastname"><br/><br/>
+        <!-- slice(0,3) 只选取 firsetname 前三位 -->
+        全名：<span>{{fullname}}</span>
+    </div>
+
+    <script>
+        Vue.config.productionTip = false  // 设置为 false 以阻止 vue 在启动时生成生产提示
+        const vm = new Vue({
+            el:'#root',
+            // 在页面中Vue的data里面的值发生改变的时候  模板会被重新解析更新
+            data:{
+                // firsetname 属性名   '张' 属性值
+                firstname:'张',
+                lastname:'三'
+            },
+            // 计算属性
+            computed:{
+                // get 获取   set 修改  更多地使用 get   set 比较少
+                fullname:{
+                    // get 有什么作用? 当有人读取fullname时，get就会被调用，且返回值就作为fullname的值
+                    // get 什么时候调用? 1.初次读取fullname时，然后做一个缓存. 2.所依赖的数据发生变化时
+                    get(){
+                        // this 指向 vm(Vue模板)
+                        // 如果要用的属性不存在  要通过已有属性计算得来
+                        return this.firstname + '-' + this.lastname
+                    },
+                    // set 什么时候调用? 当fullname被修改的时候(比如在控制台修改的时候)
+                    set(value){
+                        console.log('set',value);
+                        // split() 通过指定分隔符对字符串进行切片
+                        const arr = value.split('-')
+                        this.firstname = arr[0]
+                        this.lastname = arr[1]
+                    }
+                }
+
+                // 简写  只考虑读取不考虑修改
+                // 也就是 没有用到 set 只用到  get  简写成以下式子  也就是函数的形式
+                // fullname(){ return this.firstname + '-' + this.lastname }
+            }
+        })
+
+    </script>
+</body>
+</html>

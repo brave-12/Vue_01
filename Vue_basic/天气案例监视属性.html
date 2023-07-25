@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>监视属性-watch</title>
+    <!-- 引入 js 文件   vue.js 为开发版本  vue.main.js 为生成版本(没有代码提示,用于代码开发完成上线) -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <!-- 监视属性-watch
+        1. 通过通过 vm 对象的$watch()或 watch 配置来监视指定的属性
+        2. 当属性变化时, 回调函数自动调用, 在函数内部进行计算 -->
+        <h2>今天天气很{{info}},{{x}}</h2>
+        <button @click="changeWeather">切换天气</button>
+        <!-- 直接写在这里  也能实现切换功能  一般就一句或者是简单的语句用这种方法-->
+        <!-- <button @click="isHot = !isHot">切换天气</button> -->
+        <hr/>
+        <h3>a的值是:{{numbers.a}}</h3>
+        <button @click="numbers.a++">点我让a+1</button>
+        <h3>b的值是:{{numbers.b}}</h3>
+        <button @click="numbers.b++">点我让b+1</button>
+    </div>
+
+    <script>
+        // computed可以完成各种复杂的逻辑，包括运算、函数调用等，只要最终   return 返回一个结果就可以
+        Vue.config.productionTip = false  // 设置为 false 以阻止 vue 在启动时生成生产提示
+        const vm = new Vue({
+            el:'#root',
+            data:{
+                isHot:true,
+                x:1,
+                numbers:{
+                    a:1,
+                    b:1
+                }
+            },
+            computed:{
+                info(){
+                    return this.isHot ? '炎热' : '凉爽'
+                }
+            },
+            methods: {
+                changeWeather(){
+                    // 切换 true 和 false
+                    this.isHot = !this.isHot
+                    this.x++
+                }
+            },
+            // 监视属性  当监视属性变化时，回调函数自动调用，进行相关操作
+            // 监视的属性必须存在，才能进行监视    比如 isHot 属性
+            watch:{
+                isHot:{
+                    // immediate  初始化时 让handler调用一下   还没操作前就先log一遍
+                    // immediate:true,
+                    // handler 什么时候调用？当isHot发生改变时
+                    handler(newValue,oldValue){
+                        console.log('isHot被修改',newValue,oldValue);
+                    },
+                },
+                // 深度监视  平常没加引号是因为简写   但是 numbers.a 需要加引号
+                // 'numbers.a':{
+                //     handler(){
+                //         console.log('a被改变了');
+                //     }
+                // },
+
+                // 监视多级结构中所有属性的变化  需要添加deep值开启深度监视
+                // 要是ab都要的话也不能直接写 numbers  因为读取不到里面的值
+                numbers:{
+                    // 开启深度监视  子元素属性变化也会监视
+                    deep:true,
+                    handler(){
+                        console.log('numbers发生了改变');
+                    }
+                }
+            }
+        })
+        
+        // vm.$watch('isHot',{
+        // immediate:true,
+        // // handler 什么时候调用？当isHot发生改变时
+        // handler(newValue,oldValue){
+        //     console.log('isHot被修改',newValue,oldValue);
+        // }
+        // })
+
+        // vm.$watch 简写方式    但是不能加 immediate 和 deep
+        // vm.$watch('isHot',function (newValue,oldValue) {
+        //     console.log('isHot被修改',newValue,oldValue);
+        // })
+        
+
+    </script>
+</body>
+</html>

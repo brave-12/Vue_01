@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- 引入 js 文件   vue.js 为开发版本  vue.main.js 为生成版本(没有代码提示,用于代码开发完成上线) -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+    <style>
+        *{
+            margin-top: 20px;
+        }
+        .demo1{
+            height: 50px;
+            background-color: skyblue;
+        }
+        .box1{
+            padding: 5px;
+            background-color: blueviolet;
+        }
+        .box2{
+            padding: 5px;
+            background-color: aquamarine;
+        }
+        .list{
+            width: 200px;
+            height: 200px;
+            background-color: peru;
+            overflow: auto;
+        }
+        li{
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 准备好容器 -->
+    <div id="root">
+        <!-- 绑定监听
+        1. v-on:xxx="fun"  2. @xxx="fun"  3. @xxx="fun(参数)"  4. 默认事件形参: event
+        5. 隐含属性对象: $even -->
+        <h2>欢迎来到{{name}}</h2>
+        <!-- 事件处理的回调函数 绑定监听  v-on:xxx  或者  @xxx   绑定事件 -->
+        <button v-on:click='showInfo1'>点我提示信息(不传参)</button>
+        <!-- @ 简写绑定事件  函数后面加括号和值传参   $event 是为了原本函数内的 event 不被传参的值覆盖 -->
+        <!-- (66,$event) 在前后的位置与厦门回调函数的位置相同 -->
+        <button @click='showInfo2(66,$event)'>点我提示信息(传参)</button>
+        <hr/>
+
+        <!-- 事件修饰符(常用)
+        1. .prevent : 阻止事件的默认行为 event.preventDefault()
+        2. .stop : 阻止事件冒泡 event.stopPropagation()
+        3. .once : 事件只触发一次 -->
+
+        <!-- 阻止事件的默认行为  -->
+        <a href="http://www.atguigu.com" @click.prevent="showInfo3">点我提示信息</a>
+
+        <!-- 阻止事件冒泡  不会往外层div再传递弹出 -->
+        <div class="demo1" @click="showInfo3">
+            <button @click.stop="showInfo3">点我提示信息</button>
+            <!-- stop.prevent 既阻止了冒泡又阻止了事件的默认行为 -->
+            <!-- <a @click.stop.prevent="showInfo3">点我提示信息</a> -->
+        </div>
+
+        <!-- 事件只触发一次  下次点击就没有事件效果了 -->
+        <button @click.once="showInfo3">点我提示信息</button>
+
+        <!-- 使用事件的捕获模式  先捕获后冒泡  捕获由外到内  冒泡由内到外 -->
+        <!-- .capture 让盒子从捕获阶段就开始获取了 -->
+        <div class="box1" @click.capture="showMsg(1)">
+            div1
+            <div class="box2" @click="showMsg(2)">
+                div2
+            </div>
+        </div>
+
+        <!-- self：只有event.target是当前操作的元素时才触发事件  类似阻止冒泡 -->
+        <div class="demo1" @click.self="showInfo3">
+                <button @click="showInfo3">点我提示信息</button>
+        </div>
+
+        <!--  @scroll 是滚动条  @wheel 是滚动鼠标滚轮 就算滚动条到底了依旧会计算 -->
+        <!-- 滚动默认执行顺序为  先执行回调函数  然后才执行事件的默认行为(比如滚轮滚动) -->
+        <!-- passive  事件的默认行为立即执行，无需等待事件回调执行完毕  避免回调事件比较复杂 -->
+        <!-- 但是不是每个事件都需要，有些默认就执行无需 passive -->
+        <ul @wheel.passive="demo" class="list">
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+            <li>5</li>
+        </ul>
+
+    </div>
+
+    <script type="text/javascript">
+        Vue.config.productionTip = false  // 设置为 false 以阻止 vue 在启动时生成生产提示
+
+        new Vue({
+            el:'#root',
+            data:{
+                name:'尚硅谷'
+            },
+            // 设置回调函数的具体内容
+            methods:{
+                // 最好不要写成箭头函数 不然this不指向vm  而这些函数最后也跑到 vm 上面
+                // 但是这些函数不需要数据代理   也就是需要改变的数据才需要数据代理
+                showInfo1(event){
+                    //console.log(event.target); // 返回调用对象(button)
+                    // console.log(this);  // this 返回 vm(Vue实例对象)
+                    alert('同学你好')
+                },
+                showInfo2(number,event){
+                    // console.log(event.target); // 返回调用对象(button)
+                    // console.log(this);  // this 返回 vm(Vue实例对象)
+                    alert('传参')
+                    console.log(number);
+                },
+                showInfo3(e){
+                    alert('同学你好')
+                    // 冒泡的时候虽然冒泡到了外层，但是冒泡输出的两次目标都是 button 而不是外层也输出一次
+                    // console.log(e.target);
+                },
+                showMsg(msg){
+                    console.log(msg);
+                },
+                demo(){
+                    console.log('@');
+                }
+            }
+        })
+
+    </script>
+</body>
+</html>

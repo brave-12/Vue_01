@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Vue监测数据改变的原理</title>
+		<!-- 引入Vue -->
+		<script type="text/javascript" src="../js/vue.js"></script>
+	</head>
+	<body>
+		<!-- 准备好一个容器-->
+		<div id="root">
+			<h2>学校名称：{{name}}</h2>
+            <h2>学校地址：{{address}}</h2>
+            <h2>校长是：{{leader}}</h2>
+            <hr/>
+            <div>学生姓名：{{student.name}}</div>
+            <!-- 控制台 Vue.set(vm.student,'sex','男') 之后体现数据 -->
+            <button @click="addsex">添加一个性别属性，默认是男</button>
+            <h4 v-if="student.sex">性别:{{student.sex}}</h4>
+            <div>学生年龄：真实：{{student.age.rAge}} 对外：{{student.age.sAge}}</div>
+            <h2>朋友们</h2>
+            <ul>
+                <li v-for="(f,index) in student.friends" :key="index">
+                    {{f.name}}--{{f.age}}
+                </li>
+            </ul>
+            <h2>爱好</h2>
+            <ul>
+                <!-- 遍历数组 监测后没有发现各个元素对应的set和get -->
+                <!-- 因此通过控制台更改数据页面数据不会有变化 -->
+                <li v-for="(h,index) in student.hobby" :key="index">
+                    {{h}}
+                </li>
+            </ul>
+            <hr/>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		Vue.config.productionTip = false //阻止 vue 在启动时生成生产提示。
+        // 数据监测可以查询到每个子元素并且有get和set   数组里面的元素也可以识别并且给予get和set
+        // 一级访问对象不存在报错  比如sex不存在 访问的时候访问的是students.sex不报错  但是如果直接访问sex就报错
+        // 如果是控制台后添加的数据属性  不会含有响应式的get及set
+        // 而且vm上的数据是根据_data里面数据代理来的  因此都不能在这两个地方直接加name之类的属性
+
+        // 可以通过 Vue.set(vm.student,'sex','男')  对student添加sex属性和值
+        // vm._data.student == vm.student  Vue.set 添加的数据带有响应式的set和get
+        // 而且不能直接在data上面添加属性  只能对data里面的某个对象添加属性 比如student
+		const vm = new Vue({
+			el:'#root',
+			data:{
+				name:'尚硅谷',
+				address:'北京',
+                leader:'12',
+				student:{
+					name:'tom',
+					age:{
+						rAge:40,
+						sAge:29,
+					},
+					friends:[
+						{name:'jerry',age:35},
+                        {name:'tony',age:36}
+					],
+					hobby:['抽烟','喝酒','烫头'],
+				}
+			},
+            methods: {
+                    addsex(){
+                        Vue.set(this.student,'sex','男')
+                    }
+                },
+		})
+	</script>
+</html>
